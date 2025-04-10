@@ -76,3 +76,48 @@ variable "vpc" {
     ]
   }
 }
+
+
+variable "eks_cluster" {
+  type = object({
+    eks_cluster_name          = string
+    eks_cluster_version       = string
+    authentication_mode       = string
+    eks_cluster_role_name      = string
+    eks_node_group_role_name  = string
+    eks_node_group_name       = string
+    capacity_type             = string
+    enabled_cluster_log_types = list(string)
+    instance_types            = list(string)
+    scaling_config = object({
+      desired_size = number
+      max_size     = number
+      min_size     = number
+    })
+  })
+
+
+  default = {
+    eks_cluster_name         = "terraform-eks-cluster"
+    eks_cluster_version      = "1.31"
+    authentication_mode      = "API_AND_CONFIG_MAP"
+    eks_cluster_role_name     = "eks-cluster-iam-role"
+    eks_node_group_role_name = "AwsEksNodeGroupRole"
+    eks_node_group_name      = "eks-node-group"
+    capacity_type            = "ON_DEMAND"
+    instance_types           = ["t3.medium"]
+    enabled_cluster_log_types = [
+      "api",
+      "audit",
+      "authenticator",
+      "controllerManager",
+      "scheduler"
+    ]
+    scaling_config = {
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
+    }
+
+  }
+}
