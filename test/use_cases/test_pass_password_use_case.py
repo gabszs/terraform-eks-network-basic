@@ -3,11 +3,10 @@ import pytest
 
 from app.use_cases.password import PasswordGenerator
 
-
 @pytest.mark.asyncio
 async def test_ponctuation_password():
     pg = PasswordGenerator()
-    password_ponctuation = await pg.async_password(password_lenght=10, has_ponctuation=True)
+    password_ponctuation = await pg.async_password(password_length=10, has_ponctuation=True)
 
     assert len(password_ponctuation) == 10
     assert str(password_ponctuation).isascii()
@@ -18,7 +17,7 @@ async def test_ponctuation_password():
 @pytest.mark.asyncio
 async def test_no_ponctutation_password():
     pg = PasswordGenerator()
-    password = await pg.async_password(password_lenght=5)
+    password = await pg.async_password(password_length=5)
 
     assert len(password) == 5
     assert str(password).isalnum()

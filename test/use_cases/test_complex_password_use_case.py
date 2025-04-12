@@ -45,7 +45,7 @@ async def test_complex_password_no_suffle():
 # @pytest.mark.asyncio
 # async def test_no_ponctutation_password():
 #     pg = PasswordGenerator()
-#     password = await pg.async_password(password_lenght=5)
+#     password = await pg.async_password(password_length=5)
 
 
 #     assert len(password) == 5
