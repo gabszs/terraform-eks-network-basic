@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <meta name="password_svc_url" content="http://127.0.0.1:8000/v1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #fdf6e3, #ffffff);
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+            width: 300px;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        label {
+            flex: 1;
+        }
+        input, select, button {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Password Generator</h2>
+        
+        <div class="input-group">
+            <label for="passwordType">Select Password Type:</label>
+            <select id="passwordType" onchange="toggleFields()">
+                <option value="pin">PIN</option>
+                <option value="password">Password</option>
+                <option value="complex">Complex Password</option>
+            </select>
+        </div>
+
+        <div id="commonFields">
+            <div class="input-group">
+                <label for="passwordLength">Password Length:</label>
+                <input type="number" id="passwordLength" min="1" max="100" value="12">
+            </div>
+            <div class="input-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" min="1" max="100" value="1">
+            </div>
+        </div>
+
+        <div id="passwordFields" style="display: none;">
+            <div class="input-group">
+                <label for="hasPunctuation">Include Punctuation:</label>
+                <input type="checkbox" id="hasPunctuation" checked>
+            </div>
+        </div>
+
+        <div id="complexFields" style="display: none;">
+            <div class="input-group">
+                <label for="additionalLength">Additional Length:</label>
+                <input type="number" id="additionalLength" min="1" max="100">
+            </div>
+            <div class="input-group">
+                <label for="punctuation">Use Punctuation:</label>
+                <input type="checkbox" id="punctuation">
+            </div>
+            <div class="input-group">
+                <label for="shuffleStringInject">Shuffle String Inject:</label>
+                <input type="checkbox" id="shuffleStringInject">
+            </div>
+            <div class="input-group">
+                <label for="charInject">Character Inject:</label>
+                <input type="text" id="charInject">
+            </div>
+            <div class="input-group">
+                <label for="stringInject">String Inject:</label>
+                <input type="text" id="stringInject">
+            </div>
+        </div>
+
+        <button onclick="generatePassword()">Generate Password</button>
+        
+        <div class="input-group">
+            <textarea id="generatedPassword" placeholder="Password" readonly rows="5" style="resize: none; width: 100%;"></textarea>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = document.querySelector('meta[name="password_svc_url"]').getAttribute('content');
+
+        function toggleFields() {
+            var type = document.getElementById("passwordType").value;
+            document.getElementById("passwordFields").style.display = type === "password" ? "block" : "none";
+            document.getElementById("complexFields").style.display = type === "complex" ? "block" : "none";
+        }
+
+        async function generatePassword() {
+            let type = document.getElementById("passwordType").value;
+            let length = parseInt(document.getElementById("passwordLength").value, 10);
+            let quantity = parseInt(document.getElementById("quantity").value, 10);
+            let url;
+            let options = {};
+
+            if (type === "pin") {
+                url = `${baseUrl}/pin?password_length=${length}&quantity=${quantity}`;
+            } else if (type === "password") {
+                let hasPunctuation = document.getElementById("hasPunctuation").checked;
+                url = `${baseUrl}/?password_length=${length}&quantity=${quantity}&has_punctuation=${hasPunctuation}`;
+            } else {
+                url = `${baseUrl}/complex_password`;
+                options = {
+                    adicional_length: length,
+                    quantity: quantity,
+                    punctuation: document.getElementById("punctuation").checked,
+                    shuffle_string_inject: document.getElementById("shuffleStringInject").checked,
+                    char_inject: document.getElementById("charInject").value.split(","),
+                    string_inject: document.getElementById("stringInject").value.split(",")
+                };
+            }
+
+            try {
+                let response = await fetch(url, {
+                    method: type === "complex" ? "POST" : "GET",
+                    headers: { "Content-Type": "application/json" },
+                    body: type === "complex" ? JSON.stringify(options) : null
+                });
+
+                let data = await response.json();
+                let formattedPasswords = data.data.map(entry => Object.values(entry)[0]).join("\n");
+                document.getElementById("generatedPassword").value = formattedPasswords;
+            } catch (error) {
+                console.error("Error fetching password:", error);
+                document.getElementById("generatedPassword").value = "Error fetching password";
+            }
+        }
+    </script>
+</body>
+</html>
