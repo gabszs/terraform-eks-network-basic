@@ -98,20 +98,20 @@ Endpoints
 
 The API has the following endpoints:
 
-1. `/password/pin/{password_lenght}`
+1. `/password/pin/{password_length}`
    Endpoint to generate random pin codes.
 
 Parameters
-password_lenght (required, int): The length of the pin code to be generated.
+password_length (required, int): The length of the pin code to be generated.
 quantity (optional, int): The number of pin codes to be generated. Defaults to 1.
 Returns
 An object containing a message and a list of dictionaries, each containing a number and its respective pin code.
 
-2. `/password/pass/{password_lenght}`
+2. `/password/pass/{password_length}`
    Endpoint to generate random passwords.
 
 Parameters
-password_lenght (required, int): The length of the password to be generated.
+password_length (required, int): The length of the password to be generated.
 quantity (optional, int): The number of passwords to be generated. Defaults to 1.
 ponctuation (optional, bool): A boolean value indicating whether the password should contain punctuation characters. Defaults to False.
 Returns
