@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name:  password-frontend-svc
+spec:
+  selector:
+    app:  password-frontend
+  type:  NodePort
+  ports:
+    - port:  80
+      nodePort:  30001

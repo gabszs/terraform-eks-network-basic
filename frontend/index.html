@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Generator</title>
-    <meta name="password_svc_url" content="http://127.0.0.1:8000/v1">
+    <meta name="password_svc_url" content="http://password-generator-ingress-2102926008.sa-east-1.elb.amazonaws.com/backend/v1">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,7 +54,7 @@
 <body>
     <div class="container">
         <h2>Password Generator</h2>
-        
+
         <div class="input-group">
             <label for="passwordType">Select Password Type:</label>
             <select id="passwordType" onchange="toggleFields()">
@@ -106,7 +106,7 @@
         </div>
 
         <button onclick="generatePassword()">Generate Password</button>
-        
+
         <div class="input-group">
             <textarea id="generatedPassword" placeholder="Password" readonly rows="5" style="resize: none; width: 100%;"></textarea>
         </div>
