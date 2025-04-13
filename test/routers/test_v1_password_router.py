@@ -1,23 +1,24 @@
 import pytest
 from httpx import AsyncClient
-from app.main import app
-from icecream import ic
+
 
 @pytest.mark.asyncio
 async def test_get_password(client: AsyncClient):
-    response = client.get("/v1")
+    response = client.get("/backend/v1")
     assert response.status_code == 200
     data = response.json()
     assert data["message"] == "Success"
     assert isinstance(data["data"], list)
 
+
 @pytest.mark.asyncio
 async def test_get_pin_code(client: AsyncClient):
-    response = client.get("/v1/pin")
+    response = client.get("/backend/v1/pin")
     assert response.status_code == 200
     data = response.json()
     assert data["message"] == "Success"
     assert isinstance(data["data"], list)
+
 
 @pytest.mark.asyncio
 async def test_post_complex_password(client: AsyncClient):
@@ -27,9 +28,9 @@ async def test_post_complex_password(client: AsyncClient):
         "ponctuation": True,
         "suffle_string_inject": True,
         "char_inject": ["$", "%", "&"],
-        "string_inject": ["Secure", "FastAPI"]
+        "string_inject": ["Secure", "FastAPI"],
     }
-    response = client.post("/v1/complex_password", json=payload)
+    response = client.post("/backend/v1/complex_password", json=payload)
     assert response.status_code == 200
     data = response.json()
     assert data["message"] == "Success"
