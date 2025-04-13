@@ -1,0 +1,48 @@
+---
+- name: Install AWS Load Balancer Controller
+  gather_facts: false
+  hosts: localhost
+  vars: 
+    eks_cluster: terraform-eks-cluster
+    region: "sa-east-1"
+    account_id: "515966499694"
+    vpc_id: vpc-09c5334fc9a9599df
+
+  tasks:
+
+    - name: Download IAM Policy
+      shell: |
+          curl https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.12.0/docs/install/iam_policy.json
+      register: iam_policy_json
+
+    # - name: Create IAM Policy
+    #   shell: |
+    #         aws iam create-policy \
+    #             --policy-name AWSLoadBalancerControllerIAMPolicy \
+    #             --policy-document '{{ iam_policy_json.stdout }}'
+
+    - name: Setup IRSA
+      shell: |
+        eksctl create iamserviceaccount \
+            --cluster={{ eks_cluster }} \
+            --namespace=kube-system \
+            --name=aws-load-balancer-controller \
+            --role-name AmazonEKSLoadBalancerControllerRole \
+            --attach-policy-arn=arn:aws:iam::{{ account_id }}:policy/AWSLoadBalancerControllerIAMPolicy \
+            --region {{ region }} \
+            --approve
+
+    - name: Helm Setting Up Chart
+      shell: | 
+        helm repo add eks https://aws.github.io/eks-charts
+        helm repo update eks
+    
+    - name: Helm install or upgrade
+      shell: |
+        helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
+            -n kube-system \
+            --set clusterName={{ eks_cluster }} \
+            --set serviceAccount.create=false \
+            --set serviceAccount.name=aws-load-balancer-controller \
+            --set vpcId={{ vpc_id }} \
+            --set region={{ region }}  

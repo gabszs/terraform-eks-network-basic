@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: password-generator-ingress
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: password-generator-ingress
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/subnets: subnet-0939bb83b5fc85c04, subnet-0f24b67341386de1d
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /backend
+        pathType: Prefix
+        backend:
+          service:
+            name: password-backend-svc
+            port:
+              number: 80
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: password-frontend-svc
+            port:
+              number: 80
