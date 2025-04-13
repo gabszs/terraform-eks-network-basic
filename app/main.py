@@ -1,9 +1,11 @@
+from fastapi import APIRouter
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
 from app.router.v1 import routers
-from fastapi.middleware.cors import CORSMiddleware
 
+router = APIRouter()
 
 app = FastAPI(
     title="Password Generator",
@@ -24,7 +26,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(router=routers)
+app.include_router(router=router)
 
 if __name__ == "__main__":
     run("main:app", host="0.0.0.0", port=80, reload=True)

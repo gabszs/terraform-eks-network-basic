@@ -1,13 +1,18 @@
 import re
-from typing import List, Optional
-from fastapi import Path, Query
-from pydantic import field_validator
+from typing import List
+from typing import Optional
+
+from fastapi import Query
 from pydantic import BaseModel
+from pydantic import field_validator
+
 from app.schemas.custom_base_model import CustomBaseModel
+
 
 class PinPasswordOptions(BaseModel):
     password_length: Optional[int] = 12
     quantity: Optional[int] = 1
+
 
 class PasswordOptions(PinPasswordOptions):
     password_length: Optional[int] = 12
