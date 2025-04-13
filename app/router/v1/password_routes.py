@@ -1,14 +1,14 @@
 from asyncio import gather
+from typing import Annotated
 
 from fastapi import APIRouter
-from fastapi import Path
-from fastapi import Query
-from typing import Annotated
-from app.schemas.input_schemas import PasswordBody, PasswordOptions, PinPasswordOptions
+from fastapi import Depends
+
+from app.schemas.input_schemas import PasswordBody
+from app.schemas.input_schemas import PasswordOptions
+from app.schemas.input_schemas import PinPasswordOptions
 from app.schemas.output_schemas import PasswordOutput
 from app.use_cases.password import PasswordGenerator
-from fastapi import Depends
-from fastapi import Query
 
 _password_generator = Annotated[PasswordGenerator, Depends(PasswordGenerator)]
 router = APIRouter(tags=["Password-Generator"])
@@ -16,12 +16,10 @@ router = APIRouter(tags=["Password-Generator"])
 
 @router.get("/", response_model=PasswordOutput)
 async def get_password(pg: _password_generator, password_options: PasswordOptions = Depends()):
-# async def get_password(pg: _password_generator, password_options: PasswordOptions = Depends()):
     corroutines = list()
     for number in range(password_options.quantity):
         coro = pg.async_password(
-            password_length=password_options.password_length
-            , has_ponctuation=password_options.has_ponctuation
+            password_length=password_options.password_length, has_ponctuation=password_options.has_ponctuation
         )
         corroutines.append(coro)
 
@@ -50,10 +48,7 @@ async def pin_code(pg: _password_generator, password_options: PinPasswordOptions
 
 
 @router.post("/complex_password", response_model=PasswordOutput)
-async def complex_password(
-    password_options: PasswordBody,
-    pg: _password_generator
-):
+async def complex_password(password_options: PasswordBody, pg: _password_generator):
     corroutines = list()
 
     for number in range(password_options.quantity):

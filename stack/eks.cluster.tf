@@ -16,4 +16,3 @@ resource "aws_eks_cluster" "this" {
     aws_iam_role_policy_attachment.eks_cluster_AmazonEKSClusterPolicy
   ]
 }
-

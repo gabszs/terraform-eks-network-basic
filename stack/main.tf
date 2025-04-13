@@ -22,4 +22,3 @@ provider "aws" {
     tags = var.default_tags
   }
 }
-

@@ -3,6 +3,7 @@ import pytest
 
 from app.use_cases.password import PasswordGenerator
 
+
 @pytest.mark.asyncio
 async def test_ponctuation_password():
     pg = PasswordGenerator()
