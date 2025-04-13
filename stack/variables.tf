@@ -83,7 +83,7 @@ variable "eks_cluster" {
     eks_cluster_name          = string
     eks_cluster_version       = string
     authentication_mode       = string
-    eks_cluster_role_name      = string
+    eks_cluster_role_name     = string
     eks_node_group_role_name  = string
     eks_node_group_name       = string
     capacity_type             = string
@@ -101,7 +101,7 @@ variable "eks_cluster" {
     eks_cluster_name         = "terraform-eks-cluster"
     eks_cluster_version      = "1.31"
     authentication_mode      = "API_AND_CONFIG_MAP"
-    eks_cluster_role_name     = "eks-cluster-iam-role"
+    eks_cluster_role_name    = "eks-cluster-iam-role"
     eks_node_group_role_name = "AwsEksNodeGroupRole"
     eks_node_group_name      = "eks-node-group"
     capacity_type            = "ON_DEMAND"
@@ -120,4 +120,24 @@ variable "eks_cluster" {
     }
 
   }
+}
+
+variable "ecr_repositories" {
+  type = list(object({
+    name                 = string
+    image_tag_mutability = string
+    scan_on_push         = bool
+  }))
+
+  default = [{
+    name                 = "devops-eks-password-svc/backend"
+    image_tag_mutability = "MUTABLE"
+    scan_on_push         = true
+    },
+    {
+      name                 = "devops-eks-password-svc/frontend"
+      image_tag_mutability = "MUTABLE"
+      scan_on_push         = true
+    }
+  ]
 }
